@@ -1,5 +1,6 @@
+import { GoogleGenerativeAI } from "@google/generative-ai";
+
 const GOOGLE_API_KEY = "AIzaSyDQpto1N8atEvHVYOOuYl024HJcHPDlOys";
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${GOOGLE_API_KEY}`;
 
 export interface Message {
   id: string;
@@ -10,36 +11,39 @@ export interface Message {
 }
 
 export class ChatService {
+  private genAI: GoogleGenerativeAI;
+  private model: any;
+
+  constructor() {
+    this.genAI = new GoogleGenerativeAI(GOOGLE_API_KEY);
+    this.model = this.genAI.getGenerativeModel({ model: "gemini-pro" });
+  }
+
   async sendMessage(message: string): Promise<string> {
     try {
-      const response = await fetch(GEMINI_API_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          contents: [{
-            parts: [{
-              text: message
-            }]
-          }]
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
+      console.log('Sending message to Gemini:', message);
       
-      if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
-        return data.candidates[0].content.parts[0].text;
-      } else {
-        throw new Error('Unexpected response format');
-      }
+      const result = await this.model.generateContent(message);
+      const response = await result.response;
+      const text = response.text();
+      
+      console.log('Received response from Gemini:', text);
+      return text;
     } catch (error) {
       console.error('Chat service error:', error);
-      throw new Error('Failed to get response from AI');
+      
+      // Provide more specific error messages
+      if (error instanceof Error) {
+        if (error.message.includes('API key')) {
+          throw new Error('Invalid API key. Please check your Google AI API key.');
+        } else if (error.message.includes('quota')) {
+          throw new Error('API quota exceeded. Please try again later.');
+        } else if (error.message.includes('blocked')) {
+          throw new Error('Content was blocked by safety filters. Please try rephrasing your message.');
+        }
+      }
+      
+      throw new Error('Failed to get response from AI. Please try again.');
     }
   }
 
