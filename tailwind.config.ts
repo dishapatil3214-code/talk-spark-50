@@ -47,6 +47,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        chat: {
+          "user-bg": "hsl(var(--chat-user-bg))",
+          "user-fg": "hsl(var(--chat-user-fg))",
+          "bot-bg": "hsl(var(--chat-bot-bg))",
+          "bot-fg": "hsl(var(--chat-bot-fg))",
+          "input-bg": "hsl(var(--chat-input-bg))",
+          "sidebar-bg": "hsl(var(--chat-sidebar-bg))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -62,6 +70,11 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      backgroundImage: {
+        "gradient-primary": "var(--gradient-primary)",
+        "gradient-chat": "var(--gradient-chat)",
+        "gradient-message": "var(--gradient-message)",
       },
       keyframes: {
         "accordion-down": {
@@ -80,10 +93,27 @@ export default {
             height: "0",
           },
         },
+        "fade-in": {
+          "0%": { opacity: "0", transform: "translateY(10px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        "bounce-in": {
+          "0%": { opacity: "0", transform: "scale(0.3)" },
+          "50%": { opacity: "1", transform: "scale(1.05)" },
+          "70%": { transform: "scale(0.9)" },
+          "100%": { opacity: "1", transform: "scale(1)" },
+        },
+        "typing": {
+          "0%, 60%, 100%": { transform: "translateY(0px)" },
+          "30%": { transform: "translateY(-10px)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.3s ease-out",
+        "bounce-in": "bounce-in 0.6s var(--bounce-in)",
+        "typing": "typing 1.4s infinite ease-in-out",
       },
     },
   },
